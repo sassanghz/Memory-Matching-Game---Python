@@ -43,7 +43,7 @@ class memory_grid:
             return False
     
     def element_cell_hidden(self, row1, col1, row2, col2):
-        self.hiddenGrid[row1][col2] = 'X'
+        self.hiddenGrid[row1][col1] = 'X'
         self.hiddenGrid[row2][col2] = 'X'
     
     def game_over(self):
