@@ -16,7 +16,7 @@ def menu_displayment():
     print("--------------------")
     print("|    Brain Buster  |")
     print("--------------------")
-    print("\n[A] [B] [C] [D]")
+    print("\n    [A] [B] [C] [D]")
 
 def options_displayment():
     print("\n1. Let me select two elements")
@@ -106,7 +106,6 @@ def main():
 
         else:
             print("Invalid selection.")
-            
+
 if __name__ == '__main__':
     main()
-

@@ -16,13 +16,13 @@ class memory_grid:
         self.hiddenGrid = [['X' for _ in range(gridSize)] for _ in range(gridSize)]
         self.grid = self._generate_grid()
         self.foundPairs = 0
-        self.attemps = 0
+        self.attempts = 0
     
     def _generate_grid(self):
         elements_grid = [i // 2 for i in range(self.gridSize * self.gridSize)]
         
         #shuffle the grid elements whenever generated
-        for i in range(len(elements_grid) - 1, 0, 1):
+        for i in range(len(elements_grid) - 1, 0, -1):
             j = random.randint(0,i)
             elements_grid[i], elements_grid[j] = elements_grid[j], elements_grid[i]
         
@@ -30,7 +30,7 @@ class memory_grid:
         return [elements_grid[i * self.gridSize:(i + 1) * self.gridSize] for i in range(self.gridSize)]
 
     def element_cell_reveal(self, row1, col1, row2, col2):
-        self.attemps += 1
+        self.attempts += 1
 
         if self.grid[row1][col1] == self.grid[row2][col2]:
             # elements matched
@@ -55,19 +55,20 @@ class memory_grid:
         
         for i in range(self.gridSize):
             #Appending each column letter with a space
-            header += chr(65 + i) + " "
+            '''header += "\t" + chr(65 + i) + " "'''
         print(header.strip())
+        
 
         #each row is printed with row indices
         index_row = 0
 
-        for row in self.element_cell_hidden:
+        for row in self.hiddenGrid:
             # Lines start with the row index in brackets
-            row_line = f"[{index_row}]"
+            row_line = f"\n[{index_row}]"
 
             for cell in row:
                 #Append each cell with a space
-                row_line += cell + " "
+                row_line += "  " + cell + " "
             print(row_line.strip())
             index_row += 1
     
