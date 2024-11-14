@@ -85,19 +85,20 @@ def main():
 
         elif choice == '2':
             #revealing one element as a hint
-            row, col = divmod(random.randint(0, gridSize * gridSize - 1), gridSize)
-            print(f"Uncovered element at ({chr(65 + col)}{row}): {grid_init.grid[row][col]}")
-            grid_init.element_cell_hidden[row][col] = str(grid_init.grid[row][col])
+            grid_init.uncover_element()
         
         elif choice == '3':
-            #reveal the full grid 
-            print("\nFull Grid Displayed:")
-            for row in grid_init.grid:
-                print(" ".join(str(cell) for cell in row))
+            #turn all the hidden elements into revealed elements the full grid 
+            grid_init.reveal_grid()
+            #display the revealed grid
+            menu_displayment()
+            grid_init.display_grid()
+            print("\nDue to using the cheating method. Your score is {}")
             break
 
         elif choice == '4':
             #new game
+            print("Starting a new game!")
             grid_init = memory_grid(gridSize)
         
         elif choice == '5':

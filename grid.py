@@ -3,10 +3,8 @@ Author: Sassan Ghazi
 Date: 2024-11-6
 Course: COMP - 348
 '''
-
 #IMPORTED PACKAGES
 import random
-
 #CLASS 
 class memory_grid:
     # CONSTRUCTOR
@@ -50,14 +48,48 @@ class memory_grid:
         # if all elements have been found
         return self.foundPairs == self.pairsCount
     
+    def uncover_element(self):
+        # find the hidden cells marked as x
+        hidden_cells = [(r,c) for r in range(self.gridSize) for c in range(self.gridSize) if self.hiddenGrid[r][c] == 'X']
+
+        if hidden_cells:
+            row, col = random.choice(hidden_cells)
+            self.hiddenGrid[row][col] = str(self.grid[row][col])
+        else:
+            print("Due to using the cheating method. Your score is {}")
+
+    def reveal_grid(self):
+        for row in range(self.gridSize):
+            for col in range(self.gridSize):
+                self.hiddenGrid[row][col] = str(self.grid[row][col])
+
+    def displacement_grid(self):
+        header = "   "  # Space for row headers
+
+        for i in range(self.gridSize):
+            header += f"[{chr(65 + i)}]" + " "
+        print(header.strip())
+
+        #each row is printed with row indices
+        index_row = 0
+
+        for row in self.hiddenGrid:
+            # Lines start with the row index in brackets
+            row_line = f"\n[{index_row}]"
+
+            for cell in row:
+                #Append each cell with a space
+                row_line += "  " + cell + " "
+            print(row_line.strip())
+            index_row += 1
+
     def display_grid(self):
         header = "  "
         
         for i in range(self.gridSize):
             #Appending each column letter with a space
-            '''header += "\t" + chr(65 + i) + " "'''
+            '''header += f"[{chr(65 + i)}]" + " "'''
         print(header.strip())
-        
 
         #each row is printed with row indices
         index_row = 0
@@ -73,7 +105,7 @@ class memory_grid:
             index_row += 1
     
     def final_score(self):
-        print(f"\nCongratulations! You've won! ")
-
-
-
+        print(f"\nCongratulations! You've won! Your score is: {self.attempts} ")
+    
+    def game_over(self):
+        return self.foundPairs == self.pairsCount
