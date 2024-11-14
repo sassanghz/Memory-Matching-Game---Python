@@ -5,6 +5,7 @@ Course: COMP - 348
 '''
 
 #IMPORTED PACKAGES
+import os
 import sys
 import random
 #IMPORTED CLASS
@@ -25,6 +26,12 @@ def options_displayment():
     print("5. Exit")
     return input("\nSelect: ")
 
+def clear_screen():
+    if os.name == "nt":
+        os.system('cls')
+    else:
+        os.system('clear')
+
 
 #MAIN
 def main():
@@ -41,13 +48,17 @@ def main():
             raise ValueError
     except ValueError:
         print("Invalid grid size. User must choose ")
+        sys.exit(1)
     
     #start the game
     grid_init = memory_grid(gridSize)
-    choice = 0
+
     while True:
+        clear_screen()
         menu_displayment()
         grid_init.display_grid()
+
+        choice = options_displayment()
 
         if choice == '1':
             user_guess = input("\nEnter cell coordinates (e.g., a0): ")
@@ -84,7 +95,18 @@ def main():
             for row in grid_init.grid:
                 print(" ".join(str(cell) for cell in row))
             break
+
+        elif choice == '4':
+            #new game
+            grid_init = memory_grid(gridSize)
         
+        elif choice == '5':
+            print("Exiting the game...")
+            break
+
+        else:
+            print("Invalid selection.")
+            
 if __name__ == '__main__':
     main()
 
