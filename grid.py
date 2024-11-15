@@ -15,6 +15,8 @@ class memory_grid:
         self.grid = self._generate_grid()
         self.foundPairs = 0
         self.attempts = 0
+        self.actual_guesses = 0
+        self.minimum_potential_guesses = self.pairsCount
     
     def _generate_grid(self):
         elements_grid = [i // 2 for i in range(self.gridSize * self.gridSize)]
@@ -29,6 +31,12 @@ class memory_grid:
 
     def element_cell_reveal(self, row1, col1, row2, col2):
         self.attempts += 1
+        self.actual_guesses += 1
+
+        if self.hiddenGrid[row1][col1] != 'X' or self.hiddenGrid[row2][col2] != 'X':
+            # If either cell is already revealed, do not proceed and return False
+            print("One or both cells are already revealed.")
+            return False
 
         if self.grid[row1][col1] == self.grid[row2][col2]:
             # elements matched
@@ -38,15 +46,21 @@ class memory_grid:
             return True
         else:
             # elements != match
+            self.hiddenGrid[row1][col1] = str(self.grid[row1][col1])
+            self.hiddenGrid[row2][col2] = str(self.grid[row2][col2])
             return False
     
     def element_cell_hidden(self, row1, col1, row2, col2):
         self.hiddenGrid[row1][col1] = 'X'
         self.hiddenGrid[row2][col2] = 'X'
     
-    def game_over(self):
-        # if all elements have been found
-        return self.foundPairs == self.pairsCount
+    def option2_guesses(self):
+        self.actual_guesses += 2
+    
+    def calculate_score(self):
+        if self.actual_guesses == 0:
+            return 0
+        return (self.minimum_potential_guesses / self.actual_guesses) * 100
     
     def uncover_element(self):
         # find the hidden cells marked as x
@@ -63,49 +77,26 @@ class memory_grid:
             for col in range(self.gridSize):
                 self.hiddenGrid[row][col] = str(self.grid[row][col])
 
-    def displacement_grid(self):
-        header = "   "  # Space for row headers
-
-        for i in range(self.gridSize):
-            header += f"[{chr(65 + i)}]" + " "
-        print(header.strip())
-
-        #each row is printed with row indices
-        index_row = 0
-
-        for row in self.hiddenGrid:
-            # Lines start with the row index in brackets
-            row_line = f"\n[{index_row}]"
-
-            for cell in row:
-                #Append each cell with a space
-                row_line += "  " + cell + " "
-            print(row_line.strip())
-            index_row += 1
-
     def display_grid(self):
-        header = "  "
-        
+        #title with borders
+        print("--------------------")
+        print("|   Brain Buster   |")
+        print("--------------------\n")
+
+        header = ""  # Space to align with row indices
         for i in range(self.gridSize):
-            #Appending each column letter with a space
-            '''header += f"[{chr(65 + i)}]" + " "'''
+            # Append each column letter in brackets with spaces for alignment
+            header += f"[{chr(65 + i)}]" + "  "
         print(header.strip())
 
-        #each row is printed with row indices
+
+        # Print each row with row indices
         index_row = 0
-
         for row in self.hiddenGrid:
-            # Lines start with the row index in brackets
-            row_line = f"\n[{index_row}]"
-
+            # Start each line with the row index in brackets
+            row_line = f"[{index_row}] "
             for cell in row:
-                #Append each cell with a space
-                row_line += "  " + cell + " "
+                # Append each cell with two spaces for alignment
+                row_line += f" {cell}   "
             print(row_line.strip())
             index_row += 1
-    
-    def final_score(self):
-        print(f"\nCongratulations! You've won! Your score is: {self.attempts} ")
-    
-    def game_over(self):
-        return self.foundPairs == self.pairsCount

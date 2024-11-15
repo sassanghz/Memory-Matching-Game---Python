@@ -8,16 +8,11 @@ Course: COMP - 348
 import os
 import sys
 import random
+import time
 #IMPORTED CLASS
 from grid import memory_grid
 
 # Function Definitions
-def menu_displayment():
-    print("--------------------")
-    print("|    Brain Buster  |")
-    print("--------------------")
-    print("\n    [A] [B] [C] [D]")
-
 def options_displayment():
     print("\n1. Let me select two elements")
     print("2. Uncover one element for me")
@@ -55,45 +50,54 @@ def main():
 
     while True:
         clear_screen()
-        menu_displayment()
         grid_init.display_grid()
 
         choice = options_displayment()
 
         if choice == '1':
-            user_guess = input("\nEnter cell coordinates (e.g., a0): ")
-            user_guess2 = input("Enter cell coordinates (e.g., b0): ")
-        
+            # Get coordinates for the first and second cell from the user
+            user_guess = input("\nEnter coordinates of the first cell (e.g., A0): ")
+            user_guess2 = input("Enter coordinates of the second cell (e.g., B1): ")
+            
             try:
-                row1, col1 = int(user_guess[0].upper()) - 65
-                row2, col2 = int(user_guess2[0].upper()) - 65
+                # Convert input into row and column indices
+                row1, col1 = int(user_guess[1]), ord(user_guess[0].upper()) - 65
+                row2, col2 = int(user_guess2[1]), ord(user_guess2[0].upper()) - 65
 
-                if not (0 <= gridSize and 0 <= col1 < gridSize and 0 <= row2 < gridSize and 0 <= col2 < gridSize):
-                
-                    print("Input Error: column entry is out of range for this grid. Please try again.")
+                # Check if indices are within bounds
+                if not (0 <= row1 < gridSize and 0 <= col1 < gridSize and 
+                        0 <= row2 < gridSize and 0 <= col2 < gridSize):
+                    print("Input Error: One or both coordinates are out of range for this grid. Please try again.")
                     continue
 
+                # Attempt to reveal the cells
                 if grid_init.element_cell_reveal(row1, col1, row2, col2):
-                    print("matching elements")
+                    print("It's a match!")
+
                 else:
-                    print("no match")
-                    grid_init.element_cell_hidden(row1, col1, row2, col2)
-            
+                    grid_init.display_grid()  # Show the grid with the temporarily revealed cells
+                    time.sleep(2)  # Wait for 2 seconds
+                    grid_init.element_cell_hidden(row1, col1, row2, col2)  # Hide the cells again
+                    grid_init.display_grid()  # Re-display the grid after hiding the cells
+
             except (IndexError, ValueError):
-                print("Input Error: column entry is out of range for this grid. Please try again.")
+                print("Input Error: Invalid input format. Please enter coordinates like A0 or B1.")
                 continue
+
 
         elif choice == '2':
             #revealing one element as a hint
             grid_init.uncover_element()
+            grid_init.option2_guesses()
         
         elif choice == '3':
             #turn all the hidden elements into revealed elements the full grid 
             grid_init.reveal_grid()
             #display the revealed grid
-            menu_displayment()
             grid_init.display_grid()
-            print("\nDue to using the cheating method. Your score is {}")
+            #display the score
+            score = grid_init.calculate_score()
+            print(f"\nDue to using the cheating method. Your score is {score:.1f}")
             break
 
         elif choice == '4':
@@ -107,6 +111,14 @@ def main():
 
         else:
             print("Invalid selection.")
+            time.sleep(2)
+
+        # Check if the game is over (all pairs matched)
+        if grid_init.foundPairs == grid_init.pairsCount:
+            score = grid_init.calculate_score()
+            print("\nCongratulations! You've matched all pairs!")
+            print(f"Your score is: {score:.1f}")
+            break
 
 if __name__ == '__main__':
     main()
